@@ -1,4 +1,5 @@
 const screen = document.querySelector(".main__screen");
+const again = document.querySelector(".main__button");
 
 const controller = new InputController(screen);
 const actionsList = actionsSettings.arr.map((data) => new Action(data, controller.onChange));
@@ -32,10 +33,17 @@ function moving(e){
 
 function drawGame() {
   fillAll();
-  snake.draw();
-  snake.move();
-  snake.drawFood();
-  snake.checkScore();
+  if (snake.isLose){
+    snake.lose();
+    again.classList.add("main__button_show");
+  } else {
+    snake.checkSnake();
+    snake.checkWall();
+    snake.draw();
+    snake.move();
+    snake.drawFood();
+    snake.checkScore();
+  }
   setTimeout(drawGame, 1000 / snake.getSpeed());
 }
 
@@ -43,3 +51,11 @@ drawGame();
 
 screen.addEventListener(controller.ACTION_ACTIVATED, moving, false);
 screen.addEventListener(controller.ACTION_DEACTIVATED, () => {}, false);
+
+function clickButton(){
+  again.classList.remove("main__button_show");
+  snake.startAgain();
+}
+
+again.addEventListener("click", clickButton);
+// again.removeEventListener("click", clickButton);

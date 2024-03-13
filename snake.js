@@ -28,8 +28,8 @@ const snake = {
   dY: -1,
   dX: 0,
   foodX: 280,
+  isLose: false,
   foodY: this.width,
-
 
   init(screen){
     this.screen = screen;
@@ -66,11 +66,9 @@ const snake = {
       const getFood = item.x == this.foodX && item.y == this.foodY;
       if (getFood) createFood();
     });
-    // console.log(this.foodX, this.foodX)
   },
 
   drawFood(){
-    // console.log("2 ", this.foodX, this.foodX)
     drawRect(this.foodX, this.foodY, this.width, this.width, "#ff0000");
   },
 
@@ -83,6 +81,37 @@ const snake = {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#000000";
     ctx.fillText("Score: " + (this.arr.length - 5), this.screen.offsetWidth - 100, 30);
+  },
+
+  checkWall(){
+    if (this.arr[0].y <= 0 || this.arr[0].x <= 0 || this.arr[0].y >= this.screen.offsetWidth || this.arr[0].x >= this.screen.offsetWidth) {
+      this.isLose = true;
+    }
+  },
+
+  checkSnake(){
+    const hX = this.arr[0].x;
+    const hY = this.arr[0].y;
+    for (let i = 2; i < this.arr.length; i++){
+      if (this.arr[i].y === hY && this.arr[i].x === hX){
+        this.isLose = true;
+      }
+    }
+  },
+
+  lose(){
+    ctx.font = "36px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("You lose!", this.screen.offsetWidth * 0.5 - 80, this.screen.offsetWidth * 0.5 - 10);
+  },
+
+  startAgain(){
+    this.isLose = false;
+    this.arr = [{x: 280, y: 480},{x: 280, y: 500},{x: 280, y: 520},{x: 280, y: 540},{x: 280, y: 560}];
+    this.speed = 1;
+    this.dY = -1;
+    this.dX = 0;
+    this.createFood();
   },
 
   getSpeed(){
